@@ -8,11 +8,11 @@ Step 0 : install and load the needed libraries
 >- Step 1 : Load activity labels into a dataframe and label the columns
 >- Step 2 : Load Feature labels
 >- Step 3 : Clean up feature labels : replace the special characters as with appropriate one
-all () are replaced with empty string
-all ) are replaced with empty string
-all , are replaced with _
-all ( are replaced with _
-all - are replaced with _
+>>- all () are replaced with empty string
+>>- all ) are replaced with empty string
+>>- all , are replaced with _
+>>- all ( are replaced with _
+>>- all - are replaced with _
 
 
 
