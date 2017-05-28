@@ -31,6 +31,8 @@ Cleaning up and tidying dataset
 #### <i class="icon-folder-open"></i> Code book
 The dataset format is a text file with tab separator.
 
+Each line provide the averages of mean and stadard deviation measurement, group by activity and subject
+
 activityLabel : activity label. Possible values :
 
 >- WALKING
