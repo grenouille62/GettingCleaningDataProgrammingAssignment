@@ -30,6 +30,7 @@ Cleaning up and tidying dataset
 
 #### <i class="icon-folder-open"></i> Code book
 The dataset format is a text file with tab separator.
+
 activityLabel : activity label. Possible values :
 
 >- WALKING
