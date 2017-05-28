@@ -55,7 +55,8 @@ loadDataset <- function(context, fileName, columVector=NULL) {
 ## context = "test" or "train"
 loadObservationActivity <- function(context) {
   ds <- loadDataset(context, "y_")
-  ds <- merge(ds, activityLabels, by.x="V1", by.y="id")
+  ds <- data.frame(sapply(ds$V1, function(x) activityLabels[x,"activityLabel"]))
+  names(ds) <- c("activityLabel")
   #Add an ID column to activity observations
   #this ID is used in further merging with test measurement dataset
   ds$ID <- seq.int(nrow(ds))
@@ -76,7 +77,7 @@ columnCompletion <- function(context, mds, subject, observationAvtivity) {
   #this ID is used in further merging with observations activity dataset above
   mds$ID <- seq.int(nrow(mds))
   #Label the activities for each measurements datasets by merging 
-  mds <- merge(mds, observationAvtivity, by.x = "ID", by.y="ID", all = FALSE)
+  mds$activityLabel <- observationAvtivity$activityLabel
   mds
 }
 
@@ -108,7 +109,7 @@ columnsExtract <- c("ID", "subjectID", "context", "activityLabel", meanColumns, 
 ## Extracts data by subseting
 measurementsDataset <- subset(measurementsDataset, select = columnsExtract)
 
-#5. creates an independent tidy data set with the average of each variable for each activity and each subject
+#5.creates an independent tidy data set with the average of each variable for each activity and each subject
 #Use the package sqldf : 
 #build the sql with average of each measurement, separate by ",", and rename
 avgColumn <- paste("avg(",c(meanColumns, stdColumns),") average_", c(meanColumns, stdColumns), ",", sep = "")
