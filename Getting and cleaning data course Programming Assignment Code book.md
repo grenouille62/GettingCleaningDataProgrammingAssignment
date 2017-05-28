@@ -1,4 +1,4 @@
-README
+Getting and cleaning data course Programming Assignment Code book
 ===================
 
 ----------
