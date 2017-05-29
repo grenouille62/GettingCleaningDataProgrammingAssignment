@@ -1,20 +1,33 @@
+# The goal of this script is :
+# 1) merging the 3 file subject_<context>.txt, X_<context>.txt and y_<context>.txt, where <context> either
+# test or trainning collection data context, to one dataframe. The activity observations should be merge with its label, not its id
+# 2) cleaning up the original variables and merge the test set and the train test into an unique dataframe
+# 3) Extract only mean and standard deviation from this new dataframe as asked in the instructions
+# 4) Finally, produce a dataset with the average of each measeurement variables group by subject id and activity.
+
+
 # install and load the needed libraries
-#install.packages("dplyr")
-#install.packages("stringr")
-#install.packages("sqldf")
+# install.packages("dplyr")
+# install.packages("stringr")
+# install.packages("sqldf")
 
 library(dplyr)
 library(stringr)
 library(sqldf)
 
-
-#Clean context environment
+# -------------------------------------
+# Init operations
+# -------------------------------------
+# Clean context environment
 rm(list = ls())
 
 #Set path to data
 path = file.path(getwd(), "UCI HAR Dataset")
 
-#Load activity labels into a dataframe and label the columns
+# -------------------------------------
+# Build a dataframe for activity observations 
+# -------------------------------------
+# Load activity labels into a dataframe and label the columns
 activityLabels <- read.delim(file = file.path(path,"activity_labels.txt"), header = FALSE, sep = "")
 names(activityLabels) <- c("id", "activityLabel")
 
@@ -32,6 +45,10 @@ featureLabels <- str_replace_all(featureLabels, "\\,", "_")
 featureLabels <- str_replace_all(featureLabels, "\\(", "_")
 ## all - are replaced with _
 featureLabels <- str_replace_all(featureLabels, "\\-", "_")
+
+# -------------------------------------
+# The following is the severals helper function used to merge the 3 files subject, X and y  
+# -------------------------------------
 
 # Helper function loadDataset
 # It helps to build a dataframe using the context "test" or "train"
@@ -81,8 +98,12 @@ columnCompletion <- function(context, mds, subject, observationAvtivity) {
   mds
 }
 
+# -------------------------------------
+# Merge the 3 files subject, X and y of test and training dataset into 2 separated dataframes
+# -------------------------------------
+
 #Load Test set measurements data
-xTestSet <- loadDataset("test", "X_", featureLabels)
+xTestSet <- loadDataset("test", "X_", featureLabels) 
 #Load Trainnig set measurements data
 xTrainingSet <- loadDataset("train", "X_", featureLabels)
 
@@ -97,10 +118,14 @@ observationsTrain <- loadObservationActivity("train")
 xTestSet <- columnCompletion("TEST", xTestSet, subjectsTest, observationsTest)
 xTrainingSet <- columnCompletion("TRAIN", xTrainingSet, subjectsTrain, observationsTrain)
 
+# -------------------------------------
 # 1. Merges the training and the test sets to create one data set
+# -------------------------------------
 measurementsDataset <- union_all(xTestSet, xTrainingSet)
 
+# -------------------------------------
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+# -------------------------------------
 #Build list of column name containg the words mean or std 
 meanColumns <- featureLabels[grep("mean", featureLabels, ignore.case = TRUE)]
 stdColumns <- featureLabels[grep("std", featureLabels, ignore.case = TRUE)]
@@ -109,7 +134,9 @@ columnsExtract <- c("ID", "subjectID", "context", "activityLabel", meanColumns, 
 ## Extracts data by subseting
 measurementsDataset <- subset(measurementsDataset, select = columnsExtract)
 
-#5.creates an independent tidy data set with the average of each variable for each activity and each subject
+# -------------------------------------
+# 5. Creates an independent tidy data set with the average of each variable for each activity and each subject
+# -------------------------------------
 #Use the package sqldf : 
 #build the sql with average of each measurement, separate by ",", and rename
 avgColumn <- paste("avg(",c(meanColumns, stdColumns),") average_", c(meanColumns, stdColumns), ",", sep = "")
