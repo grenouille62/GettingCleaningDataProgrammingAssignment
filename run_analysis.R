@@ -148,6 +148,6 @@ sql <- paste("select activityLabel, subjectID, ", paste(avgColumn, collapse = ""
 tidyMeasurementsDataset <- sqldf(x=sql)
 
 #Write the tidy data to a txt file with tab separator
-write.table(tidyMeasurementsDataset, file = file.path(path, "Human_Activity_Recognition_Using_Smartphones_Tidy_DataSet.txt"), fileEncoding = "UTF-8", sep = "\t", col.names = TRUE)
+write.table(tidyMeasurementsDataset, file = file.path(path, "Human_Activity_Recognition_Using_Smartphones_Tidy_DataSet.txt"), fileEncoding = "UTF-8", sep = "\t", col.names = TRUE, row.names = FALSE)
 
 
